@@ -73,7 +73,7 @@ class BookController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Data Not Found'
-            ],404);
+            ]);
         }
     }
 

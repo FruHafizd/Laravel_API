@@ -135,8 +135,8 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <?php $i = 1; ?>
-                            @forelse ($data as $item)
+                            <?php $i =$data['from']; ?>
+                            @forelse ($data['data'] as $item)
                                 <tr class="hover:bg-gray-50 transition-colors duration-200">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $i }}
                                     </td>
@@ -183,6 +183,57 @@
 
                         </tbody>
                     </table>
+                    @if ($data['links'])
+                    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                        {{-- Mobile View --}}
+                        <div class="flex-1 flex justify-between sm:hidden">
+                            <a href="{{ $data['prev_page_url'] }}" 
+                            class="{{ !$data['prev_page_url'] ? 'opacity-50 cursor-not-allowed' : '' }} relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                                Previous
+                            </a>
+                            <a href="{{ $data['next_page_url'] }}" 
+                            class="{{ !$data['next_page_url'] ? 'opacity-50 cursor-not-allowed' : '' }} relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                                Next
+                            </a>
+                        </div>
+
+                        {{-- Desktop View --}}
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-700">
+                                    Showing
+                                    <span class="font-medium text-gray-900">{{ $data['from'] ?? 0 }}</span>
+                                    to
+                                    <span class="font-medium text-gray-900">{{ $data['to'] ?? 0 }}</span>
+                                    of
+                                    <span class="font-medium text-gray-900">{{ $data['total'] }}</span>
+                                    results
+                                </p>
+                            </div>
+                            <div>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                    @foreach ($data['links'] as $item)
+                                        @php
+                                            $isActive = str_contains($item['label'], $data['current_page']);
+                                            $isPrevNext = in_array($item['label'], ['&laquo; Previous', 'Next &raquo;']);
+                                        @endphp
+
+                                        <a href="{{ $item['url2'] }}" 
+                                        class="{{ !$item['url2'] ? 'cursor-not-allowed opacity-50' : '' }}
+                                                {{ $isActive ? 'z-10 bg-amber-50 border-amber-500 text-amber-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' }}
+                                                {{ $isPrevNext ? 'hidden sm:inline-flex' : '' }}
+                                                relative inline-flex items-center px-4 py-2 border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500
+                                                {{ $loop->first ? 'rounded-l-md' : '' }}
+                                                {{ $loop->last ? 'rounded-r-md' : '' }}"
+                                        @if(!$item['url2']) aria-disabled="true" @endif>
+                                            {!! $item['label'] !!}
+                                        </a>
+                                    @endforeach
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
             <!-- AKHIR DATA -->
